@@ -1,10 +1,11 @@
-"use client"; // <--- VERY IMPORTANT: This makes it a Client Component
+"use client";
 
 import React, { useState, useEffect, useCallback, useRef, KeyboardEvent } from 'react';
 // Import from your new Firebase client config
 import { auth, db, appIdForFirestore } from '@/utils/firebaseClient';
 import { signInAnonymously, signInWithCustomToken, onAuthStateChanged } from 'firebase/auth';
 import { collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc, Timestamp, QueryDocumentSnapshot, DocumentData } from 'firebase/firestore';
+import Logger from '@/services/logger';
 
 // Define the Todo item interface for strong typing
 interface Todo {
@@ -46,7 +47,7 @@ const TodoApp = () => {
         // The 'auth/configuration-not-found' error indicates an issue during Firebase app initialization
         // which happens in firebaseClient.ts, likely due to incorrect/missing .env.local variables.
         if (!auth) {
-            console.error("Firebase Auth object is null/undefined. This usually means Firebase failed to initialize.");
+            Logger.instance.error("Firebase Auth object is null/undefined. This usually means Firebase failed to initialize.");
             if (isMounted.current) {
                 setWarning('Firebase Auth not available. Ensure .env.local is correct and server restarted.');
             }
@@ -58,7 +59,7 @@ const TodoApp = () => {
                 if (isMounted.current) {
                     setUserId(user.uid);
                     setIsAuthReady(true);
-                    console.log("Firebase Auth Ready. User ID:", user.uid);
+                    Logger.instance.log("Firebase Auth Ready. User ID:"+ user.uid);
                 }
             } else {
                 try {
@@ -75,7 +76,7 @@ const TodoApp = () => {
                         await signInAnonymously(auth);
                     }
                 } catch (error: any) { // Use 'any' for unknown error types or define more specific Error type
-                    console.error("Error signing in:", error.message);
+                    Logger.instance.error("Error signing in:"+ error.message);
                     if (isMounted.current) {
                         setWarning(`Error signing in: ${error.message}. Please check your Firebase project config.`);
                     }
@@ -111,7 +112,7 @@ const TodoApp = () => {
                     setTodos(fetchedTodos);
                 }
             }, (error: any) => {
-                console.error("Error fetching todos:", error.message);
+                Logger.instance.error("Error fetching todos:"+ error.message);
                 if (isMounted.current) {
                     setWarning('Failed to fetch todos. Check console for details.');
                 }
@@ -119,7 +120,7 @@ const TodoApp = () => {
 
             return () => unsubscribe();
         }
-    }, [db, auth, isAuthReady]); // Re-run when db, auth, or authReady changes
+    }, [isAuthReady]); // Re-run when db, auth, or authReady changes
 
     // Function to show a temporary warning message
     const showWarning = (message: string) => {
@@ -155,14 +156,14 @@ const TodoApp = () => {
                 await updateDoc(todoRef, {
                     todo: trimmedText,
                 });
-                console.log('Todo updated successfully!');
+                Logger.instance.log('Todo updated successfully!');
             } else {
                 await addDoc(todosCollectionRef, {
                     todo: trimmedText,
                     isCompleted: false,
                     createdAt: Timestamp.now(),
                 });
-                console.log('Todo added successfully!');
+                Logger.instance.log('Todo added successfully!');
             }
             if (isMounted.current) {
                 setTodoText('');
@@ -170,7 +171,7 @@ const TodoApp = () => {
                 setWarning('');
             }
         } catch (error: any) {
-            console.error('Error adding/updating todo:', error.message);
+            Logger.instance.error('Error adding/updating todo:'+ error.message);
             if (isMounted.current) {
                 showWarning('Failed to save todo. Please try again.');
             }
@@ -179,7 +180,7 @@ const TodoApp = () => {
                 setIsLoading(false);
             }
         }
-    }, [todoText, editingId, todos, db]);
+    }, [todoText, editingId, todos]);
 
     // Handle key press in the input field
     const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -194,12 +195,12 @@ const TodoApp = () => {
         try {
             const todoRef = doc(db, `artifacts/${appIdForFirestore}/public/data/todos`, id);
             await deleteDoc(todoRef);
-            console.log('Todo removed successfully!');
+            Logger.instance.log('Todo removed successfully!');
             if (isMounted.current) {
                 setWarning('');
             }
         } catch (error: any) {
-            console.error('Error removing todo:', error.message);
+            Logger.instance.error('Error removing todo:'+ error.message);
             if (isMounted.current) {
                 showWarning('Failed to remove todo. Please try again.');
             }
@@ -227,12 +228,12 @@ const TodoApp = () => {
             await updateDoc(todoRef, {
                 isCompleted: !isCompleted,
             });
-            console.log('Todo completion status updated!');
+            Logger.instance.log('Todo completion status updated!');
             if (isMounted.current) {
                 setWarning('');
             }
         } catch (error: any) {
-            console.error('Error updating todo completion status:', error.message);
+            Logger.instance.error('Error updating todo completion status:'+ error.message);
             if (isMounted.current) {
                 showWarning('Failed to update todo status. Please try again.');
             }
