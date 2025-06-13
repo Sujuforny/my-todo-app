@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef, KeyboardEvent } from 'react';
-// Import from your new Firebase client config
 import { auth, db, appIdForFirestore } from '@/utils/firebaseClient';
 import { signInAnonymously, signInWithCustomToken, onAuthStateChanged } from 'firebase/auth';
 import { collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc, Timestamp, QueryDocumentSnapshot, DocumentData } from 'firebase/firestore';
@@ -12,10 +11,9 @@ interface Todo {
     id: string;
     todo: string;
     isCompleted: boolean;
-    createdAt: string; // Storing as ISO string for client-side use
+    createdAt: string;
 }
 
-// Main App component (now `page.tsx` in App Router)
 const TodoApp = () => {
     // State for the current todo input value
     const [todoText, setTodoText] = useState<string>('');
@@ -209,7 +207,7 @@ const TodoApp = () => {
                 setIsLoading(false);
             }
         }
-    }, [db]);
+    }, []);
 
     // Handle editing a todo
     const handleEditTodo = useCallback((todo: Todo) => {
@@ -242,7 +240,7 @@ const TodoApp = () => {
                 setIsLoading(false);
             }
         }
-    }, [db]);
+    }, []);
 
     // Filter logic based on input text
     useEffect(() => {
