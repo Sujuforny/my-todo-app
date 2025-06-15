@@ -1,8 +1,8 @@
 // app/layout.tsx
 import './globals.css';
-import type { Metadata } from 'next'; // Important for Next.js 13+ App Router metadata
-
-export const metadata: Metadata = { // Using Metadata type
+import type { Metadata } from 'next';
+import { ReduxProvider } from '../store/provider';
+export const metadata: Metadata = {
   title: 'Next.js Todo App (TS)',
   description: 'A collaborative todo list built with Next.js and Firebase.',
 };
@@ -14,7 +14,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body cz-shortcut-listen="true">{children}</body>
+      <body cz-shortcut-listen="true">
+        <ReduxProvider>
+          {children}
+        </ReduxProvider>
+      </body>
     </html>
   );
 }

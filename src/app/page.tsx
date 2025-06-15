@@ -5,7 +5,7 @@ import { auth, db, appIdForFirestore } from '@/utils/firebaseClient';
 import { signInAnonymously, signInWithCustomToken, onAuthStateChanged } from 'firebase/auth';
 import { collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc, Timestamp, QueryDocumentSnapshot, DocumentData } from 'firebase/firestore';
 import Logger from '@/services/logger';
-
+import { useRouter } from 'next/navigation';
 // Define the Todo item interface for strong typing
 interface Todo {
     id: string;
@@ -263,10 +263,17 @@ const TodoApp = () => {
 
     const displayTodos: Todo[] = isFiltering ? filteredTodos : todos;
     const showNoResult: boolean = isFiltering && filteredTodos.length === 0;
+     const router = useRouter();
 
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col items-center p-4 font-sans antialiased">
             <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-md my-8">
+                <button
+                onClick={() => router.push('/todowithspring')}
+                className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200"
+                >
+                Go to todo use spring as server
+                </button>
                 <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">Collaborative Todo List</h1>
                 {userId && (
                     <p className="text-sm text-gray-500 text-center mb-4">
