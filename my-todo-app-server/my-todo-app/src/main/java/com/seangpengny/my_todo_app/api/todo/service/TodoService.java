@@ -11,7 +11,7 @@ import java.util.UUID;
 @Service
 public interface TodoService {
 
-    Boolean createTodo(TodoDto todoDto);
+    Todo createTodo(TodoDto todoDto);
     Boolean updateTodoById(TodoDto todoDto);
     List<Todo> findAllTodo();
     Todo findTodoById(String id);

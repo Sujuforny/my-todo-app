@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { Todo, ApiResponse } from './types'; // Assuming you have a types.ts file, adjust path if needed
+import Logger from '@/services/logger';
 
 const API_BASE_URL = 'http://localhost:7777/api/v1/'; // Your {{dev}} variable
 
@@ -16,14 +17,8 @@ export const fetchTodos = createAsyncThunk<Todo[], void>( // <Return Type, Argum
 export const createTodo = createAsyncThunk<Todo, string>( // <Return Type, Argument Type>
     'todos/createTodo',
     async (todoText) => {
-        const response = await axios.post<ApiResponse<boolean>>(`${API_BASE_URL}todo`, { todo: todoText });
-        const newTodo: Todo = {
-            id: Math.random().toString(36).substring(2, 15), // Mock ID
-            todo: todoText,
-            isCompleted: false,
-            createdAt: new Date().toISOString(),
-        };
-        return newTodo;
+        const response = await axios.post<ApiResponse<Todo>>(`${API_BASE_URL}todo`, { todo: todoText });
+        return response.data.data;
     }
 );
 
@@ -38,7 +33,8 @@ export const deleteTodo = createAsyncThunk<string, string>( // <Return Type, Arg
 export const updateTodo = createAsyncThunk<Todo, Todo>( // <Return Type, Argument Type>
     'todos/updateTodo',
     async (todoItem) => {
-        const response = await axios.put<ApiResponse<boolean>>(`${API_BASE_URL}todo`, todoItem);
+        Logger.instance.log(todoItem);
+        await axios.put<ApiResponse<boolean>>(`${API_BASE_URL}todo`, todoItem);
         return todoItem;
     }
 );

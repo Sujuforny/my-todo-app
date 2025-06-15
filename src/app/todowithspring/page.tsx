@@ -49,7 +49,8 @@ export default function HomePage() {
 
     if (editingId) {
       // If editing, dispatch update
-      dispatch(updateTodo({ id: editingId, todo: trimmedText } as any));
+      const todo = todos.find((todo: Todo) => todo.id === editingId)
+      dispatch(updateTodo({ id: editingId, todo: trimmedText ,isCompleted:todo?.isCompleted}));
       setEditingId(null);
     } else {
       // If not editing, dispatch create

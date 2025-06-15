@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,11 +19,15 @@ import java.util.UUID;
 public class TodoServiceImpl implements TodoService{
     private final TodoMapper todoMapper;
     @Override
-    public Boolean createTodo(TodoDto todoDto) {
+    public Todo createTodo(TodoDto todoDto) {
+        UUID uuid = UUID.randomUUID();
         Todo todo = new Todo();
         todo.setTodo(todoDto.todo());
         todo.setIsCompleted(true);
-        return todoMapper.register(todo,UUID.randomUUID());
+        todo.setId(String.valueOf(uuid));
+        todo.setCreatedAt(LocalDateTime.now());
+        todoMapper.register(todo,uuid);
+        return todo;
     }
 
     @Override

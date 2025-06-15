@@ -45,13 +45,13 @@ public class TodoRestController {
     @PostMapping
     public BaseRest<?> createTodo(@RequestBody TodoDto todoDto){
         log.info("todo :{}",todoDto);
-        Boolean status = todoService.createTodo(todoDto);
+        Todo todo = todoService.createTodo(todoDto);
         return BaseRest.builder()
                 .status(true)
                 .code(HttpStatus.OK.value())
                 .message("todo created!!!")
                 .timestamp(LocalDateTime.now())
-                .data(status)
+                .data(todo)
                 .build();
     }
     @PutMapping
