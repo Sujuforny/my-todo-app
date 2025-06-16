@@ -10,7 +10,7 @@ export const fetchTodos = createAsyncThunk<Todo[], void>( // <Return Type, Argum
     'todos/fetchTodos',
     async () => {
         const response = await axios.get<ApiResponse<Todo[]>>(`${API_BASE_URL}todo`);
-        return response.data.data; // Assuming your API returns data in { status, code, message, timestamp, data } format
+        return response.data.data;
     }
 );
 

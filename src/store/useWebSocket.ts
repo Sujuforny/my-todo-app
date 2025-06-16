@@ -1,94 +1,47 @@
-import { useEffect, useState, useRef, useCallback } from 'react';
 import { Client, IFrame } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
-import Logger from '@/services/logger';
 
-export interface WebSocketMessage {
-  type: 'public' | 'private' | 'user-specific';
-  content: string;
-  sender?: string;
-}
+export class WebSocketManager {
+  private stompClient: Client;
+  private isConnected = false;
 
-type WebSocketCallback = (client: Client) => void;
-type ErrorCallback = (frame: IFrame) => void;
-type DisconnectCallback = (frame: IFrame) => void;
-
-const useWebSocket = (
-  wsUrl: string,
-  onConnectCallback?: WebSocketCallback,
-  onDisconnectCallback?: DisconnectCallback,
-  onErrorCallback?: ErrorCallback
-) => {
-  const [isConnected, setIsConnected] = useState<boolean>(false);
-  const [error, setError] = useState<Error | null>(null);
-  const stompClientRef = useRef<Client | null>(null);
-
-  const connect = useCallback(() => {
-    if (stompClientRef.current && stompClientRef.current.connected) {
-      Logger.instance.log('STOMP client already connected.');
-      return;
-    }
-
-    const client = new Client({
-      // Note: brokerURL expects 'ws://' or 'wss://' for native WebSockets.
-      // For SockJS, we use webSocketFactory and provide the HTTP URL.
-      // The SockJS library will handle the appropriate transport.
-      webSocketFactory: () => new SockJS(wsUrl),
+  constructor(
+    private url: string,
+    private onMessage: (msg: string) => void
+  ) {
+    this.stompClient = new Client({
+      webSocketFactory: () => new SockJS(this.url),
       reconnectDelay: 5000,
-      heartbeatIncoming: 4000,
-      heartbeatOutgoing: 4000,
-      debug: (str: string) => {
-        Logger.instance.log('STOMP Debug:'+ str);
-      },
+      debug: (str) => console.log('[STOMP DEBUG]', str),
     });
 
-    client.onConnect = (frame: IFrame) => {
-      Logger.instance.log('Connected to WebSocket:'+ frame);
-      setIsConnected(true);
-      setError(null);
-      if (onConnectCallback) {
-        onConnectCallback(client);
-      }
+    this.stompClient.onConnect = () => {
+      this.isConnected = true;
+      console.log('✅ Connected to WebSocket');
+      this.stompClient.subscribe('/update/public', (message) => {
+        console.log("hehhe");
+        this.onMessage(message.body);
+      });
     };
 
-    client.onStompError = (frame: IFrame) => {
-      Logger.instance.error('STOMP Error:'+ frame);
-      setIsConnected(false);
-      setError(new Error(frame.headers.message || 'Unknown STOMP error'));
-      if (onErrorCallback) {
-        onErrorCallback(frame);
-      }
+    this.stompClient.onStompError = (frame: IFrame) => {
+      console.error('❌ STOMP Error:', frame.headers['message']);
     };
+  }
 
-    client.onDisconnect = (frame: IFrame) => {
-      Logger.instance.log('Disconnected from WebSocket:'+ frame);
-      setIsConnected(false);
-      if (onDisconnectCallback) {
-        onDisconnectCallback(frame);
-      }
-    };
+  public connect() {
+    this.stompClient.activate();
+  }
 
-    client.activate();
-    stompClientRef.current = client;
-  }, [wsUrl, onConnectCallback, onDisconnectCallback, onErrorCallback]);
+  public disconnect() {
+    this.stompClient.deactivate();
+  }
 
-  const disconnect = useCallback(() => {
-    if (stompClientRef.current && stompClientRef.current.connected) {
-      stompClientRef.current.deactivate();
-      Logger.instance.log('WebSocket disconnected.');
+  public sendMessage(destination: string, message: string) {
+    if (this.isConnected) {
+      this.stompClient.publish({ destination, body: message });
+    } else {
+      console.warn('⚠️ Cannot send message: Not connected');
     }
-    setIsConnected(false);
-  }, []);
-
-  useEffect(() => {
-    connect();
-
-    return () => {
-      disconnect();
-    };
-  }, [connect, disconnect]);
-
-  return { stompClient: stompClientRef.current, isConnected, error, connect, disconnect };
-};
-
-export default useWebSocket;
+  }
+}
