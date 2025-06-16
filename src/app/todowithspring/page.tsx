@@ -6,6 +6,7 @@ import { fetchTodos, createTodo, deleteTodo, updateTodo, addTodoLocal, updateTod
 import { Todo } from '../../interface/types';
 import React, { KeyboardEvent } from 'react';
 import { WebSocketManager } from '@/store/useWebSocket';
+import { useRouter } from 'next/navigation';
 
 
 export default function HomePage() {
@@ -25,6 +26,7 @@ export default function HomePage() {
 
     const isRefreshRef = useRef(true);
 
+    const router = useRouter();
 
       useEffect(() => {
         const manager = new WebSocketManager('http://localhost:7777/ws', (receivedMessage) => {
@@ -157,9 +159,17 @@ export default function HomePage() {
         );
     }
 
+    const onClickBack= ()=>{
+        console.log("hello")
+        // router.push("/");
+        router.back();
+
+    }
+
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col items-center p-4 font-sans antialiased">
             <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-md my-8">
+                <button className='px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200' onClick={()=>onClickBack()}>Back</button>
                 <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">My Todos</h1>
 
                 <div className="mb-4 flex items-center">
