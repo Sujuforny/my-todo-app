@@ -1,40 +1,42 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { Todo, ApiResponse } from '../interface/types'; // Assuming you have a types.ts file, adjust path if needed
+import { Todo, ApiResponse } from '../interface/types';
 import Logger from '@/services/logger';
 
-const API_BASE_URL = 'http://localhost:7777/api/v1/'; // Your {{dev}} variable
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+const CONTEXT = process.env.NEXT_PUBLIC_API_CONTEXT;
+
 
 // Async Thunks for API Calls
-export const fetchTodos = createAsyncThunk<Todo[], void>( // <Return Type, Argument Type>
+export const fetchTodos = createAsyncThunk<Todo[], void>(
     'todos/fetchTodos',
     async () => {
-        const response = await axios.get<ApiResponse<Todo[]>>(`${API_BASE_URL}todo`);
+        const response = await axios.get<ApiResponse<Todo[]>>(`${API_BASE_URL}${CONTEXT}todo`);
         return response.data.data;
     }
 );
 
-export const createTodo = createAsyncThunk<Todo, string>( // <Return Type, Argument Type>
+export const createTodo = createAsyncThunk<Todo, string>(
     'todos/createTodo',
     async (todoText) => {
-        const response = await axios.post<ApiResponse<Todo>>(`${API_BASE_URL}todo`, { todo: todoText });
+        const response = await axios.post<ApiResponse<Todo>>(`${API_BASE_URL}${CONTEXT}todo`, { todo: todoText });
         return response.data.data;
     }
 );
 
-export const deleteTodo = createAsyncThunk<string, string>( // <Return Type, Argument Type>
+export const deleteTodo = createAsyncThunk<string, string>(
     'todos/deleteTodo',
     async (id) => {
-        await axios.delete<ApiResponse<boolean>>(`${API_BASE_URL}todo?id=${id}`);
+        await axios.delete<ApiResponse<boolean>>(`${API_BASE_URL}${CONTEXT}todo?id=${id}`);
         return id;
     }
 );
 
-export const updateTodo = createAsyncThunk<Todo, Todo>( // <Return Type, Argument Type>
+export const updateTodo = createAsyncThunk<Todo, Todo>(
     'todos/updateTodo',
     async (todoItem) => {
         Logger.instance.log(todoItem);
-        await axios.put<ApiResponse<boolean>>(`${API_BASE_URL}todo`, todoItem);
+        await axios.put<ApiResponse<boolean>>(`${API_BASE_URL}${CONTEXT}todo`, todoItem);
         return todoItem;
     }
 );
@@ -53,7 +55,7 @@ const todoSlice = createSlice({
         items: [],
         status: 'idle',
         error: null,
-    } as TodoState, // Assert initial state type
+    } as TodoState,
 
     reducers: {
         addTodoLocal: (state, action: PayloadAction<Todo>) => {

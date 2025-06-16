@@ -55,6 +55,7 @@ export default function HomePage() {
         return () => {
           manager.disconnect();
         };
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       },[]);
 
     useEffect(() => {
@@ -160,7 +161,6 @@ export default function HomePage() {
     }
 
     const onClickBack= ()=>{
-        console.log("hello")
         // router.push("/");
         router.back();
 
@@ -220,6 +220,12 @@ export default function HomePage() {
                                 </div>
                                 <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 ease-in-out">
                                     <button
+                                        onClick={() => handleToggleComplete(todo)}
+                                        className={`px-3 py-1 text-sm rounded-md font-medium ${todo.isCompleted ? 'bg-yellow-500 text-white hover:bg-yellow-600' : 'bg-green-500 text-white hover:bg-green-600'}`}
+                                    >
+                                        {todo.isCompleted ? 'Incomplete' : 'Complete'}
+                                    </button>
+                                    <button
                                         onClick={() => handleEditTodo(todo)}
                                         className="px-3 py-1 text-sm bg-blue-500 text-white rounded-md font-medium hover:bg-blue-600"
                                     >
@@ -230,12 +236,6 @@ export default function HomePage() {
                                         className="px-3 py-1 text-sm bg-red-500 text-white rounded-md font-medium hover:bg-red-600"
                                     >
                                         Remove
-                                    </button>
-                                    <button
-                                        onClick={() => handleToggleComplete(todo)}
-                                        className={`px-3 py-1 text-sm rounded-md font-medium ${todo.isCompleted ? 'bg-yellow-500 text-white hover:bg-yellow-600' : 'bg-green-500 text-white hover:bg-green-600'}`}
-                                    >
-                                        {todo.isCompleted ? 'Incomplete' : 'Complete'}
                                     </button>
                                 </div>
                             </li>

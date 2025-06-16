@@ -45,7 +45,7 @@ const TodoApp = () => {
                 if (isMounted.current) {
                     setUserId(user.uid);
                     setIsAuthReady(true);
-                    Logger.instance.log("Firebase Auth Ready. User ID:"+ user.uid);
+                    Logger.instance.log("Firebase Auth Ready. User ID:"+ userId);
                 }
             } else {
                 try {
