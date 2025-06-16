@@ -12,3 +12,8 @@ export interface ApiResponse<T> {
   timestamp: string | null;
   data: T;
 }
+
+export interface ReceivedMessage{
+  data:Todo;
+  type:string;
+}

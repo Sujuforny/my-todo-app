@@ -54,7 +54,21 @@ const todoSlice = createSlice({
         status: 'idle',
         error: null,
     } as TodoState, // Assert initial state type
-    reducers: {},
+
+    reducers: {
+        addTodoLocal: (state, action: PayloadAction<Todo>) => {
+            state.items.push(action.payload);
+        },
+        deleteTodoLocal: (state, action: PayloadAction<string>) => {
+            state.items = state.items.filter(todo => todo.id !== action.payload);
+        },
+        updateTodoLocal: (state, action: PayloadAction<Todo>) => {
+            const index = state.items.findIndex(todo => todo.id === action.payload.id);
+            if (index !== -1) {
+                state.items[index] = action.payload;
+            }
+        },
+    },
     extraReducers: (builder) => {
         builder
             .addCase(fetchTodos.pending, (state) => {
@@ -84,3 +98,4 @@ const todoSlice = createSlice({
 });
 
 export default todoSlice.reducer;
+export const { addTodoLocal, deleteTodoLocal, updateTodoLocal } = todoSlice.actions;

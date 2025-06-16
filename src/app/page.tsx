@@ -15,35 +15,22 @@ interface Todo {
 }
 
 const TodoApp = () => {
-    // State for the current todo input value
     const [todoText, setTodoText] = useState<string>('');
-    // State for the list of todos
     const [todos, setTodos] = useState<Todo[]>([]);
-    // State to store the ID of the todo being edited (null if not editing)
     const [editingId, setEditingId] = useState<string | null>(null);
-    // State for displaying user warnings (e.g., duplicate, empty)
     const [warning, setWarning] = useState<string>('');
-    // State for filtered todos (when filtering is active)
     const [filteredTodos, setFilteredTodos] = useState<Todo[]>([]);
-    // State to indicate if filtering is active
     const [isFiltering, setIsFiltering] = useState<boolean>(false);
-    // State for Firebase authentication readiness
     const [isAuthReady, setIsAuthReady] = useState<boolean>(false);
-    // State for current user ID
     const [userId, setUserId] = useState<string | null>(null);
-    // State for loading status (e.g., during API calls/DB operations)
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    // Ref to track if component is mounted to prevent state updates on unmounted component
     const isMounted = useRef<boolean>(true);
 
     // Firebase Authentication
     useEffect(() => {
-        isMounted.current = true; // Mark component as mounted
+        isMounted.current = true;
 
-        // Check if 'auth' object from firebaseClient is initialized
-        // The 'auth/configuration-not-found' error indicates an issue during Firebase app initialization
-        // which happens in firebaseClient.ts, likely due to incorrect/missing .env.local variables.
         if (!auth) {
             Logger.instance.error("Firebase Auth object is null/undefined. This usually means Firebase failed to initialize.");
             if (isMounted.current) {
@@ -61,9 +48,7 @@ const TodoApp = () => {
                 }
             } else {
                 try {
-                    // The __initial_auth_token is specific to the Canvas environment
-                    // In a standard Next.js app, you wouldn't typically rely on this global.
-                    // We'll try to sign in anonymously if no such token is present.
+
                     const initialAuthToken = (typeof window !== 'undefined' && typeof (window as any).__initial_auth_token !== 'undefined')
                         ? (window as any).__initial_auth_token as string
                         : null;
@@ -73,7 +58,7 @@ const TodoApp = () => {
                     } else {
                         await signInAnonymously(auth);
                     }
-                } catch (error: any) { // Use 'any' for unknown error types or define more specific Error type
+                } catch (error: any) {
                     Logger.instance.error("Error signing in:"+ error.message);
                     if (isMounted.current) {
                         setWarning(`Error signing in: ${error.message}. Please check your Firebase project config.`);
@@ -83,8 +68,8 @@ const TodoApp = () => {
         });
 
         return () => {
-            isMounted.current = false; // Mark component as unmounted
-            unsubscribeAuth(); // Unsubscribe from auth state changes
+            isMounted.current = false;
+            unsubscribeAuth();
         };
     }, []); // Run only once on component mount
 

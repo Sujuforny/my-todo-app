@@ -31,7 +31,7 @@ public class TodoServiceImpl implements TodoService{
     }
 
     @Override
-    public Boolean updateTodoById(TodoDto todoDto) {
+    public Todo updateTodoById(TodoDto todoDto) {
 
         try {
             Todo todo = todoMapper.search(UUID.fromString(todoDto.id()));
@@ -42,8 +42,10 @@ public class TodoServiceImpl implements TodoService{
             }else {
                 data.setTodo(todoDto.todo());
                 data.setIsCompleted(todoDto.isCompleted());
+                data.setId(todo.getId());
             }
-                return todoMapper.update(data,uuid);
+            todoMapper.update(data,uuid);
+            return data;
         } catch (IllegalArgumentException e) {
             throw new InvalidTodoIdException(todoDto.id());
         }

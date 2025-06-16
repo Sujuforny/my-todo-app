@@ -50,6 +50,7 @@ public class TodoRestController {
     public BaseRest<?> createTodo(@RequestBody TodoDto todoDto){
         log.info("todo :{}",todoDto);
         Todo todo = todoService.createTodo(todoDto);
+        messagingTemplate.convertAndSend("/public/create",todo);
         return BaseRest.builder()
                 .status(true)
                 .code(HttpStatus.OK.value())
@@ -60,19 +61,20 @@ public class TodoRestController {
     }
     @PutMapping
     public BaseRest<?> updateTodoById(@RequestBody TodoDto todoDto){
-        Boolean status = todoService.updateTodoById(todoDto);
-        messagingTemplate.convertAndSend("/update/public","hello");
+        Todo todo = todoService.updateTodoById(todoDto);
+        messagingTemplate.convertAndSend("/public/update",todo);
         return BaseRest.builder()
                 .status(true)
                 .code(HttpStatus.OK.value())
                 .message("todo Updated!!!")
                 .timestamp(LocalDateTime.now())
-                .data(status)
+                .data(todo)
                 .build();
     }
     @DeleteMapping
     public BaseRest<?> deleteTodoById(@RequestParam String id){
         Boolean status = todoService.deleteTodoById(id);
+        messagingTemplate.convertAndSend("/public/delete",id);
         return BaseRest.builder()
                 .status(true)
                 .code(HttpStatus.OK.value())
@@ -82,10 +84,9 @@ public class TodoRestController {
                 .build();
     }
 
-    @MessageMapping("/chat.sendMessage")
-    public void sendMessage(@Payload Object payload) {
+    @MessageMapping("/sendMessage")
+    public void sendMessage(@Payload MessageDto payload) {
         log.info("user send :{}",payload);
-        messagingTemplate.convertAndSend("/update/public","update");
-        
+        messagingTemplate.convertAndSend("/public/"+payload.type(),payload);
     }
 }

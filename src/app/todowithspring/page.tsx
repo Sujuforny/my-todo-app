@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
-import { fetchTodos, createTodo, deleteTodo, updateTodo } from '../../store/todoSlice';
+import { fetchTodos, createTodo, deleteTodo, updateTodo, addTodoLocal, updateTodoLocal, deleteTodoLocal} from '../../store/todoSlice';
 import { Todo } from '../../interface/types';
 import React, { KeyboardEvent } from 'react';
 import { WebSocketManager } from '@/store/useWebSocket';
@@ -20,12 +20,31 @@ export default function HomePage() {
     const [filteredTodos, setFilteredTodos] = useState<Todo[]>([]);
     const [isFiltering, setIsFiltering] = useState<boolean>(false);
 
-      const wsManagerRef = useRef<WebSocketManager | null>(null);
-    
+    const wsManagerRef = useRef<WebSocketManager | null>(null);
+
+
+    const isRefreshRef = useRef(true);
+
+
       useEffect(() => {
-        const manager = new WebSocketManager('http://localhost:7777/ws', () => {
-            console.log("heheh")
-            dispatch(fetchTodos());
+        const manager = new WebSocketManager('http://localhost:7777/ws', (receivedMessage) => {
+            if(isRefreshRef.current){
+                const {type,data}=receivedMessage;
+                switch (type) {
+                    case "create":
+                            dispatch(addTodoLocal(data));
+                        break;
+                    case "update":
+                            dispatch(updateTodoLocal(data));
+                        break;
+                    case "delete":
+                            dispatch(deleteTodoLocal(data.id));
+                        break;
+                    default:
+                        break;
+                }
+            }
+           isRefreshRef.current = true;
         });
 
         wsManagerRef.current = manager;
@@ -34,14 +53,13 @@ export default function HomePage() {
         return () => {
           manager.disconnect();
         };
-      }, [dispatch]);
+      },[]);
 
     useEffect(() => {
-        // Only fetch if status is 'idle' to prevent unnecessary re-fetches
         if (todoStatus === 'idle') {
             dispatch(fetchTodos());
         }
-    }, [todoStatus, dispatch]); // Dependencies ensure this runs when status changes or dispatch is stable
+    }, [todoStatus, dispatch]);
 
     // Function to show a temporary warning message
     const showWarning = (message: string) => {
@@ -49,10 +67,11 @@ export default function HomePage() {
         const timer = setTimeout(() => {
             setWarning('');
         }, 3000);
-        return () => clearTimeout(timer); // Cleanup timer
+        return () => clearTimeout(timer);
     };
 
     const handleAddOrUpdateTodo = () => {
+        isRefreshRef.current = false;
         const trimmedText: string = newTodoText.trim();
         if (!trimmedText) {
             showWarning('Todo item cannot be empty!');
@@ -79,6 +98,7 @@ export default function HomePage() {
     };
 
     const handleDeleteTodo = (id: string) => {
+        isRefreshRef.current = false;
         dispatch(deleteTodo(id));
     };
 
@@ -140,7 +160,7 @@ export default function HomePage() {
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col items-center p-4 font-sans antialiased">
             <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-md my-8">
-                <h1 className="text-3xl font-bold text-center text-gray-800 mb-6" onClick={()=>handleSend()}>My Todos</h1>
+                <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">My Todos</h1>
 
                 <div className="mb-4 flex items-center">
                     <input

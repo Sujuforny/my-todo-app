@@ -12,7 +12,7 @@ import java.util.UUID;
 public interface TodoService {
 
     Todo createTodo(TodoDto todoDto);
-    Boolean updateTodoById(TodoDto todoDto);
+    Todo updateTodoById(TodoDto todoDto);
     List<Todo> findAllTodo();
     Todo findTodoById(String id);
     Boolean deleteTodoById(String id);
