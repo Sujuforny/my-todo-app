@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { Todo, ApiResponse } from './types'; // Assuming you have a types.ts file, adjust path if needed
+import { Todo, ApiResponse } from '../interface/types'; // Assuming you have a types.ts file, adjust path if needed
 import Logger from '@/services/logger';
 
 const API_BASE_URL = 'http://localhost:7777/api/v1/'; // Your {{dev}} variable

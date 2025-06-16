@@ -6,7 +6,7 @@ import { signInAnonymously, signInWithCustomToken, onAuthStateChanged } from 'fi
 import { collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc, Timestamp, QueryDocumentSnapshot, DocumentData } from 'firebase/firestore';
 import Logger from '@/services/logger';
 import { useRouter } from 'next/navigation';
-// Define the Todo item interface for strong typing
+
 interface Todo {
     id: string;
     todo: string;

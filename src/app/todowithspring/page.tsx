@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import { fetchTodos, createTodo, deleteTodo, updateTodo } from '../../store/todoSlice';
-import { Todo } from '../../store/types';
+import { Todo } from '../../interface/types';
 import React, { KeyboardEvent } from 'react';
 
 export default function HomePage() {
