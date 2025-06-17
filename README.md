@@ -6,8 +6,40 @@ A simple todo application built with Next.js.
 
 ## 🚀 Features
 
-* **React + Next.js Framework**: Built using the robust Next.js framework for a performant and scalable React application.
-* **[Add any other relevant features of your todo app]**: For example: "Add, delete, and mark tasks as complete," "Persists data locally in the browser," "User-friendly interface with responsive design," etc.
+* **Complete Todo List with Next.js**: A fully functional todo list implemented using Next.js.
+* **Input Field & List Elements**: Includes an input field for adding new todos and a list to display them.
+* **Add Todo on Enter**: New items are added to the list by typing text in the input field and hitting the Enter key.
+* **Minimal UI**: Sticks to the browser's default styling for a clean, straightforward interface.
+* **React Hooks**: Extensive use of React hooks for state management and side effects.
+* **Todo API Integration**: Fetches todo items from a custom Next.js API endpoint (`/api/todo`). The API provides dummy data in the format:
+    ```json
+    [
+      {
+        "id": "string",
+        "todo": "string",
+        "isCompleted": "boolean",
+        "createdAt": "timestamp"
+      },
+      // ... more items
+    ]
+    ```
+
+### Building More Functionalities:
+
+* **Valid Todo List**: Prevents adding empty items to the list.
+* **Unique Todo List**: Ensures no duplicate items are added. Users are warned if they attempt to add a duplicate.
+* **Removable Todo List**:
+    * A "remove" button appears when hovering over a todo item.
+    * Items can be removed from the list by clicking the "remove" button.
+* **Editable Todo List**:
+    * An "edit" button appears when hovering over a todo item.
+    * Clicking "edit" populates the main input field with the item's text, allowing users to edit and update the item by hitting Enter again.
+* **Filter Todo List**:
+    * As the user types in the input bar, the list filters dynamically based on simple text matching.
+    * If no results match the filter, a "No result. Create a new one instead!" message is displayed.
+* **Mark as Complete**:
+    * "Mark as Complete"/"Mark as Incomplete" buttons appear on hover.
+    * Completed todos are displayed with strikethrough text.
 
 ---
 
