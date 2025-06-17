@@ -29,7 +29,8 @@ export default function HomePage() {
     const router = useRouter();
 
       useEffect(() => {
-        const manager = new WebSocketManager('http://localhost:7777/ws', (receivedMessage) => {
+        const url = process.env.NEXT_PUBLIC_API_BASE_URL||"http://localhost:7777";
+        const manager = new WebSocketManager(url+"/ws", (receivedMessage) => {
             if(isRefreshRef.current){
                 const {type,data}=receivedMessage;
                 switch (type) {
