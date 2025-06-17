@@ -36,9 +36,10 @@ Once you're in the project directory, install all the necessary npm packages:
 
 ```Bash
 npm install
+```
+
 3. Run the Development Server
 To launch the application in development mode, use the following command:
-```
 
 ```Bash
 npm run dev
