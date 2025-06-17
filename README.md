@@ -4,6 +4,10 @@ A simple todo application built with Next.js.
 
 ---
 
+🌐 **Live Demo:** [Click Here to View the App!](http://18.141.189.86:3000/)
+
+---
+
 ## 🚀 Features
 
 * **Complete Todo List with Next.js**: A fully functional todo list implemented using Next.js.
@@ -11,18 +15,6 @@ A simple todo application built with Next.js.
 * **Add Todo on Enter**: New items are added to the list by typing text in the input field and hitting the Enter key.
 * **Minimal UI**: Sticks to the browser's default styling for a clean, straightforward interface.
 * **React Hooks**: Extensive use of React hooks for state management and side effects.
-* **Todo API Integration**: Fetches todo items from a custom Next.js API endpoint (`/api/todo`). The API provides dummy data in the format:
-    ```json
-    [
-      {
-        "id": "string",
-        "todo": "string",
-        "isCompleted": "boolean",
-        "createdAt": "timestamp"
-      },
-      // ... more items
-    ]
-    ```
 
 ### Building More Functionalities:
 
