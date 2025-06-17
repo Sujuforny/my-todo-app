@@ -35,32 +35,33 @@ cd my-todo-app
 Once you're in the project directory, install all the necessary npm packages:
 
 ```Bash
-
 npm install
 3. Run the Development Server
 To launch the application in development mode, use the following command:
 ```
-```Bash
 
+```Bash
 npm run dev
 ```
+
 This will start the Next.js development server, usually accessible at http://localhost:3000. The app will automatically reload in your browser as you make changes to the code.
 
 ⚙️ Building for Production
 When you're ready to deploy your application, you can create an optimized production build:
 
-```Bash
 
+```Bash
 npm run build
 ```
+
 This command compiles and optimizes your Next.js application for the best performance in a production environment.
 
 After building, you can serve the optimized production version locally with:
 
 ```Bash
-
 npm run start
 ```
+
 📚 Learn More
 To delve deeper into Next.js and understand how this application works, check out the official documentation:
 
