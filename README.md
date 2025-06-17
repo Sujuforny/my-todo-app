@@ -4,7 +4,7 @@ A simple todo application built with Next.js.
 
 ---
 
-🌐 **Live Demo:** <a href="[http://18.141.189.86:3000/]" target="_blank" rel="noopener noreferrer">Click Here to View the App!</a>
+🌐 **Live Demo:** <a href="http://18.141.189.86:3000/" target="_blank" rel="noopener noreferrer">Click Here to View the App!</a>
 
 ---
 
