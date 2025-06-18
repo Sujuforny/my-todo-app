@@ -1,6 +1,11 @@
 # 📘 My Todo App
 
 A simple todo application built with Next.js.
+- using
+   -Postgres
+   -Firebase
+   -Nextjs
+   -Spring boot
 
 ---
 
